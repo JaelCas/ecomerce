@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import "./db/db.js";
 import productosRoutes from './routes/productos.js';
+import usuarioRoutes from './routes/usuario.js';
 
 const app = express();
 
@@ -14,3 +15,4 @@ app.get('/', (req, res) => {
 });
 app.use("/api/producto", productosRoutes);
 app.listen(8081, () => console.log('Servidor corriendo en http://localhost:8081'));
+app.use("/api/usuario", usuarioRoutes);

@@ -7,5 +7,5 @@ const productoSchema = new mongoose.Schema({
     Image: {type:String,required:true},
 });
 // forzar a guardar la infrmacion en la coleccion Productos
-const Product = mongoose.model("producto", productoSchema, "producto");
+const Product = mongoose.model("productos", productoSchema, "productos");
 export default Product;

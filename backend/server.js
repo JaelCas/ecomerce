@@ -4,6 +4,7 @@ import "./db/db.js";
 import productosRoutes from './routes/productos.js';
 import usuarioRoutes from './routes/usuario.js';
 import { loginusuario } from './controllers/login.js';
+import obtenerPerfil from './routes/perfil.js'; 
 
 const app = express();
 
@@ -16,7 +17,9 @@ app.get('/', (req, res) => {
     res.send('Bienvennido al curso de node express');
 });
 app.use("/api/producto", productosRoutes);
-app.listen(8081, () => console.log('Servidor corriendo en http://localhost:8081'));
 app.use("/api/usuario", usuarioRoutes);
 app.use("/api/login", loginusuario); 
+app.use("/api/perfil", obtenerPerfil);
+
+app.listen(8081, () => console.log('Servidor corriendo en http://localhost:8081'));
 

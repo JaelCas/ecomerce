@@ -3,6 +3,6 @@ import {obtenerPerfil} from "../controllers/perfil.js";
 
 const router = express.Router();
 
-router.post('/obtenre',obtenerPerfil);
+router.post('/obtener',obtenerPerfil);
 
 export default router;

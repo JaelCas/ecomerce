@@ -6,13 +6,13 @@ async function cargarProductos(){
         const productos = await response.json();
 
         const grid = document.getElementById('products-grid');
-            grid.innerHTML = productos.map(producto=>`
+            grid.innerHTML = productos.map(productos=>`
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 product-card"
                 data-category="laptops"
-                data-price="${producto.precio}"
-                data-product-Id="${producto.productId}">
+                data-price="${productos.precio}"
+                data-product-Id="${productos.productId}">
                 <div class="bg-linear-to-br from-gray-100 to-gray-200 h-48 flex items-center justify-center overflow-hidden">
-                <img src="${producto.Image}" alt="${producto.Nombre}" 
+                <img src="${productos.Image}" alt="${productos.Nombre}" 
                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                 loading="lazy">
                 
@@ -22,19 +22,20 @@ async function cargarProductos(){
                 </div>
                 <div class="p-6">
                 <h3 class="text-lg font-bold text-gray-800">
-                ${producto.Nombre}
+                ${productos.Nombre}
                 </h3>
                 <p class="text-sm text-gray-800 mb-4">
-                ${producto.Descripcion}
+                ${productos.Descripcion}
                 </p>
                 <div class="flex items-center justify-between mt-4">
                 <div>
                 <span class="text-2xl font-bold text-blue-600">
-                ${(producto.Precio || 0).toLocaleString('es-CO')}
+                ${(productos.Precio || 0).toLocaleString('es-CO')}
                 </span>
                 </div>
 
                 <div class="flex text-yellow-600">
+                ⭐️⭐️⭐️⭐️⭐️
                 </div>
                 </div>
                 <div class="flex space-x-2">

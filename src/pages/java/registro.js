@@ -1,42 +1,47 @@
-//script de login -techstore pro 
-
-//verificar que toda la pagina este cargada con los elementos 
-//html 
 document.addEventListener('DOMContentLoaded', function(){
     console.log('✅ Pagina cargada correctamente');
 
     //creamos constante de la Api
 
-    const API_URL="http://localhost:8081/api/login";
+    const API_URL="http://localhost:8081/api/usuario/register";
 
     //enviar los datos del formulario 
-    document.getElementById('login-form').addEventListener('submit', async function(e){
+    document.getElementById('register-form').addEventListener('submit', async function(e){
         e.preventDefault();
 
         //preparamos los elementos de la pagina
-        const btn = document.getElementById('login-btn');
-        const errorDiv = document.getElementById('login-error');
-        const errorMsg = document.getElementById('login-error-message');
+        const btn = document.getElementById('register-btn');
+        const errorDiv = document.getElementById('register-error');
+        const errorMsg = document.getElementById('register-error-message');
         
         errorDiv.classList.add('hidden');
+
+        //campos del formulario
+
+        const nombre = document.getElementById('nombre').value.trim();
+        const apellido = document.getElementById
 
         //recoger los datos del formulario
 
         const datos ={
+            nombre: document.getElementById('nombre').value.trim(),
+            apellido: document.getElementById('apellido').value.trim(),
             email: document.getElementById('email').value.trim(),
-            password: document.getElementById('password').value
+            telefono: document.getElementById('telefono').value.trim(),
+            password: document.getElementById('password').value,
+            passwordd: document.getElementById('passwordd').value
         };
 
         //validamos que los campos no esten vacios
-        if(!datos.email || !datos.password){
+        if(!datos.nombre || !datos.apellido ||!datos.email || !datos.telefono || !datos.password){
             errorMsg.textContent='Por favor, complete los datos';
             errorDiv.classList.remove('hidden');
             return;
         }
         //cambia el boton mientras procesa 
 
-        btn.disable=true;
-        btn.textContent='Iniciando sesión...';
+        btn.disabled=true;
+        btn.textContent='Registrando usuario...';
 
         //enviar los datos al servidor 
 
@@ -51,13 +56,13 @@ document.addEventListener('DOMContentLoaded', function(){
 
             const resultado = await response.json();
             if (response.ok){
-                console.log('201- Inicio de sesion exitoso');
+                console.log('201- Registro exitoso');
 
                 // guardar informacion
 
                 localStorage.setItem("sesionActiva", "tue");
                 localStorage.setItem("Usuario", JSON.stringify({
-                    id:resultado.usuario.id,
+                    id:resultado.usuario._id,
                     nombre: resultado.usuario.nombre,
                     telefono: resultado.usuario.telefono,
                     email: resultado.usuario.email,
@@ -66,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 // mensaje de exito
 
                 errorDiv.className='bg-green-50 border-green-200 text-green-800 px-4 py-3 rounded-lg';
-                errorMsg.textContent='Inicio de sesion exitoso, Redirigiendo...';
+                errorMsg.textContent='Registro de sesion exitoso, Redirigiendo...';
                 errorDiv.classList.remove('hidden');
 
                 // redirigir a productos
@@ -78,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 errorMsg.textContent=resultado.message || 'Credenciales incorrectas';
                 errorDiv.classList.remove('hidden');
                 btn.disabled=false;
-                btn.innerHTML='Iniciar Sesion';
+                btn.innerHTML='Registrar usuario';
             }
 
 
@@ -88,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function(){
             errorMsg.textContent='Error conexion de servidor';
             errorDiv.classList.remove('hidden');
             btn.disabled=false;
-            btn.innerHTML='Iniciar Sesion';
+            btn.innerHTML='Registar Usuario';
         }
     });
 });

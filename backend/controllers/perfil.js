@@ -2,6 +2,7 @@
 import user from "../models/usuario.js";
 
 //obtenemos perfil del usuario de la base de datos 
+
 export const obtenerPerfil = async (req, res) => {
     try {
         const {email} = req.body;

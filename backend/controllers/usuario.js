@@ -1,6 +1,7 @@
 import usuario from "../models/usuario.js";
 import bcrypt from "bcrypt";
-// crear producto 
+
+// crear usuario
 export const registrarusuario = async (req, res) => {
     try {
         const {nombre, apellido, email, password, telefono} = req.body;
@@ -9,8 +10,8 @@ export const registrarusuario = async (req, res) => {
             return res.status(400).json({message: "Faltan campos o datos obligatorios"})
         }
         //valida si el usuario ya existe
-        const existeusuario = await usuario.findOne ({email});
-        if (existeusuario) {
+        const existeuser = await usuario.findOne ({email});
+        if (existeuser) {
             return res.status(400).json({message: "Usuario ya existe"})
         }
         //encriptar la contraseña

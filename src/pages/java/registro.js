@@ -16,11 +16,6 @@ document.addEventListener('DOMContentLoaded', function(){
         
         errorDiv.classList.add('hidden');
 
-        //campos del formulario
-
-        const nombre = document.getElementById('nombre').value.trim();
-        const apellido = document.getElementById
-
         //recoger los datos del formulario
 
         const datos ={
@@ -29,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function(){
             email: document.getElementById('email').value.trim(),
             telefono: document.getElementById('telefono').value.trim(),
             password: document.getElementById('password').value,
-            passwordd: document.getElementById('passwordd').value
+            passwordConfirm: document.getElementById('passwordConfirm').value
         };
 
         //validamos que los campos no esten vacios
@@ -62,10 +57,11 @@ document.addEventListener('DOMContentLoaded', function(){
 
                 localStorage.setItem("sesionActiva", "tue");
                 localStorage.setItem("Usuario", JSON.stringify({
-                    id:resultado.usuario._id,
-                    nombre: resultado.usuario.nombre,
-                    telefono: resultado.usuario.telefono,
-                    email: resultado.usuario.email,
+                    id:resultado.usuario?._id || resultado.id,
+                    nombre: resultado.usuario?.nombre || datos.nombre,
+                    apellido: resultado.usuario?.apellido || datos.apellido,
+                    telefono: resultado.usuario?.telefono || datos.telefono,
+                    email: resultado.usuario?.email || datos.email
                 }));
 
                 // mensaje de exito

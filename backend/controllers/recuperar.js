@@ -5,8 +5,8 @@ import user from "../models/usuario.js";
 const trasnporte = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'juliocastillomendez572@gmail.com',
-        pass: 'vgzwxykmlscbojnw'
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 });
 //funcion de generar codigo de 6 digitos 
@@ -136,6 +136,8 @@ export const cambiarPassword = async (req, res) => {
         usuario.codigoRecuperacion = undefined;
         usuario.codigoExpiracion = undefined;
         await usuario.save();        
+
+        //Email de confirmacion 
 
         const mailOptions = {
             from: 'juliocastillomendez572@gmail.com',

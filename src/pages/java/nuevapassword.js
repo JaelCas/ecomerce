@@ -17,6 +17,8 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     const passError = document.getElementById("pass-error");
     const confirmError = document.getElementById("confirm-error");
 
+    const btn = document.getElementById("login-btn");
+
     codeError.classList.add("hidden");
     passError.classList.add("hidden");
     confirmError.classList.add("hidden");
@@ -26,6 +28,10 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
         confirmError.classList.remove("hidden");
         return;
     }
+
+    // ⬇️ TEXTO QUE PEDISTE
+    btn.textContent = "Verificando código…";
+    btn.disabled = true;
 
     try {
         const response = await fetch("http://localhost:8081/api/Recuperar/cambiar-password", {
@@ -43,19 +49,29 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
         const data = await response.json();
 
         if (!response.ok) {
+            btn.textContent = "Cambiar Contraseña";
+            btn.disabled = false;
+
             codeError.textContent = data.message || "Código incorrecto";
             codeError.classList.remove("hidden");
             return;
         }
 
-        // Limpiar datos
-        localStorage.removeItem("emailRecuperacion");
+        // TEXTO QUE PEDISTE AL CAMBIAR CONTRASEÑA
+        btn.textContent = "Contraseña actualizada. Redirigiendo…";
 
-        // Redirigir al login
-        window.location.href = "./login.html";
+        // Esperar un poco antes de redirigir
+        setTimeout(() => {
+            localStorage.removeItem("emailRecuperacion");
+            window.location.href = "./login.html";
+        }, 1500);
 
     } catch (error) {
         console.error("Error:", error);
+
+        btn.textContent = "Cambiar Contraseña";
+        btn.disabled = false;
+
         codeError.textContent = "Error de servidor";
         codeError.classList.remove("hidden");
     }

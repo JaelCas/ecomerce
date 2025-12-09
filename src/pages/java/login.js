@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     //creamos constante de la Api
 
-    const API_URL="http://localhost:8081/api/login";
+    const API_URL="https://ecomerce-1-1jpe.onrender.com/api/login";
 
     //enviar los datos del formulario 
     document.getElementById('login-form').addEventListener('submit', async function(e){

@@ -34,7 +34,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     btn.disabled = true;
 
     try {
-        const response = await fetch("http://localhost:8081/api/Recuperar/cambiar-password", {
+        const response = await fetch("https://ecomerce-1-1jpe.onrender.com/api/Recuperar/cambiar-password", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

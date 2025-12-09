@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     //creamos constante de la Api
 
-    const API_URL="http://localhost:8081/api/usuario/register";
+    const API_URL="https://ecomerce-1-1jpe.onrender.com/api/usuario/register";
 
     //enviar los datos del formulario 
     document.getElementById('register-form').addEventListener('submit', async function(e){

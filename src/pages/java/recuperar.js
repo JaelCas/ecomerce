@@ -13,7 +13,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     btn.disabled = true;
 
     try {
-        const response = await fetch("http://localhost:8081/api/Recuperar/solicitar-codigo", {
+        const response = await fetch("https://ecomerce-1-1jpe.onrender.com/api/Recuperar/solicitar-codigo", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

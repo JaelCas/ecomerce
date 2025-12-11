@@ -111,11 +111,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             datosOriginales = { nombre, apellido, telefono };
             document.getElementById("display-name").textContent = nombre;
 
-            const usuarioActualizado = JSON.parse(localStorage.getItem("usuario"));
+            const usuarioActualizado = JSON.parse(localStorage.getItem("Usuario"));
             usuarioActualizado.nombre = nombre;
             usuarioActualizado.apellido = apellido;
             usuarioActualizado.telefono = telefono;
-            localStorage.setItem("usuario", JSON.stringify(usuarioActualizado));
+            localStorage.setItem("Usuario", JSON.stringify(usuarioActualizado));
 
             mostrarToast("Perfil actualizado exitosamente", "success");
             toggleEdit(false);

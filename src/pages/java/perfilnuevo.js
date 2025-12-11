@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     `;
 
     let datosOriginales = { nombre: usuario.nombre, apellido: usuario.apellido, telefono: usuario.telefono };
-    const inputs = [document.getElementById("nombre"), document.getElementById("telefono")];
+    const inputs = [document.getElementById("nombre"), document.getElementById("apellido"), document.getElementById("telefono")];
     const btns = {
         editar: document.getElementById("btn-editar"),
         guardar: document.getElementById("btn-guardar"),
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     btns.cancelar.addEventListener("click", () => {
         inputs[0].value = datosOriginales.nombre;
         inputs[1].value = datosOriginales.apellido;
-        inputs[1].value = datosOriginales.telefono;
+        inputs[2].value = datosOriginales.telefono;
         toggleEdit(false);
     });
 
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     btns.guardar.addEventListener("click", async () => {
         const nombre = inputs[0].value.trim();
         const apellido = inputs[1].value.trim();
-        const telefono = inputs[1].value.trim();
+        const telefono = inputs[2].value.trim();
 
         if (!nombre || !apellido || !telefono) {
             mostrarToast("Por favor completa todos los campos", "error");
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const res = await fetch("https://ecomerce-1-1jpe.onrender.com/api/perfil/actualizar", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: perfil.email, nombre, telefono })
+                body: JSON.stringify({ email: perfil.email, nombre, apellido, telefono })
             });
 
             const data = await res.json();

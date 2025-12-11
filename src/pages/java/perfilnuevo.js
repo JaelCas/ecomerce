@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("display-name").textContent = usuario.apellido;
     document.getElementById("display-email").textContent = usuario.email;
     document.getElementById("nombre").value = usuario.nombre;
+    document.getElementById("apellido").value = usuario.apellido;
     document.getElementById("telefono").value = usuario.telefono;
     document.getElementById("email").value = usuario.email;
 

@@ -93,10 +93,31 @@ document.addEventListener("DOMContentLoaded", async () => {
         const telefono = inputs[2].value.trim();
 
         if (!nombre || !apellido || !telefono) {
-            mostrarToast("Por favor completa todos los campos", "error");
+           Swal.fire({
+                icon: "warning",
+                title: "Campos incompletos",
+                text: "Por favor llena todos los campos.",
+                confirmButtonColor: "#2563eb"
+            });
             return;
         }
-        if (!confirm("¿Guardar cambios?")) return;
+
+        // ======== Confirmación elegante ========
+        const result = await Swal.fire({
+            title: "¿Guardar cambios?",
+            text: "Tu información personal será actualizada.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Sí, guardar",
+            cancelButtonText: "Cancelar",
+            confirmButtonColor: "#2563eb",
+            cancelButtonColor: "#dc2626"
+        });
+
+        if (!result.isConfirmed) {
+            console.log("🔸 Usuario canceló la edición");
+            return;
+        }
 
         try {
             const res = await fetch("https://ecomerce-1-1jpe.onrender.com/api/perfil/actualizar", {

@@ -96,21 +96,21 @@ document.addEventListener("DOMContentLoaded", async () => {
             mostrarToast("Por favor completa todos los campos", "error");
             return;
         }
+            // 🔥 Modal bonito reemplazando confirm()
         const result = await Swal.fire({
             title: "¿Guardar cambios?",
             text: "Se actualizará tu información personal.",
             icon: "question",
             showCancelButton: true,
-            confirmButtonText: "Sí, guardar",
+            confirmButtonText: "Guardar",
             cancelButtonText: "Cancelar",
-            confirmButtonColor: "#2563eb",   // Azul elegante
-            cancelButtonColor: "#dc2626",    // Rojo
-            background: "#fff",
-            color: "#111"
+            confirmButtonColor: "#2563eb",
+            cancelButtonColor: "#6b7280",
+            background: "#1f2937",   // gris oscuro elegante
+            color: "#fff"
         });
 
-        if (!result.isConfirmed) return;
-
+    if (!result.isConfirmed) return;
 
         try {
             const res = await fetch("https://ecomerce-1-1jpe.onrender.com/api/perfil/actualizar", {

@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function(){
         }
         //cambia el boton mientras procesa 
 
-        btn.disable=true;
+        btn.disabled=true;
         btn.textContent='Iniciando sesión...';
 
         //enviar los datos al servidor 

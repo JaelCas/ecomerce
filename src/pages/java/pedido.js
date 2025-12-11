@@ -1,180 +1,223 @@
-// pedido.js - TechStore Pro
-const API_URL = "https://ecomerce-1-1jpe.onrender.com/api";
-const getCarrito = () => JSON.parse(localStorage.getItem('carrito')) || [];
-const setCarrito = (c) => localStorage.setItem('carrito', JSON.stringify(c));
+// =====================================================
+// 🛒 MOSTRAR CARRITO
+// =====================================================
+function mostrarCarrito() {
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-// Toast
-function toast(msg, tipo = 'success') {
-    const color = tipo === 'success' ? 'bg-green-600' : 'bg-red-600';
-    const div = document.createElement('div');
-    div.className = `fixed top-20 right-5 ${color} text-white px-6 py-4 rounded-xl shadow-2xl z-50 transition-all duration-500`;
-    div.style.cssText = 'opacity:0;transform:translateX(400px)';
-    div.innerHTML = `<div class="flex items-center gap-3"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg><span class="font-semibold">${msg}</span></div>`;
-    document.body.appendChild(div);
-    setTimeout(() => div.style.cssText = 'opacity:1;transform:translateX(0)', 10);
-    setTimeout(() => {
-        div.style.cssText = 'opacity:0;transform:translateX(400px)';
-        setTimeout(() => div.remove(), 500);
-    }, 3000);
-}
+    // Coincide exactamente con TU HTML
+    const contenedor = document.querySelector(".lista-carrito");
+    const subtotalText = document.querySelector(".subtotal-text");
+    const totalText = document.querySelector(".total-text");
 
-// Cargar carrito
-function cargarCarrito() {
-    const carrito = getCarrito();
-    if (!carrito.length) return;
-    
-    const subtitulo = document.querySelector('h1 + p');
-    if (!subtitulo) return;
-    
-    subtitulo.insertAdjacentHTML('afterend', `<div class="mt-8">${carrito.map((item, i) => `
-        <div class="bg-white shadow-lg rounded-xl p-5 mb-4 flex items-center gap-4">
-            <img src="${item.image}" alt="${item.nombre}" class="w-24 h-24 object-cover rounded-lg">
-            <div class="flex-1">
-                <h3 class="font-semibold text-lg">${item.nombre}</h3>
-                <p class="text-gray-500 text-sm">${item.descripcion || ''}</p>
-                <p class="text-blue-600 font-bold mt-1">$${item.precio.toLocaleString('es-CO')}</p>
-            </div>
-            <div class="flex items-center gap-3">
-                <button onclick="cambiarCantidad(${i},-1)" class="bg-gray-200 px-3 py-1 rounded-lg hover:bg-gray-300 font-bold">-</button>
-                <span class="font-semibold text-lg w-8 text-center">${item.cantidad}</span>
-                <button onclick="cambiarCantidad(${i},1)" class="bg-gray-200 px-3 py-1 rounded-lg hover:bg-gray-300 font-bold">+</button>
-            </div>
-            <button onclick="eliminarProducto(${i})" class="text-red-500 hover:text-red-700 p-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
-        </div>
-    `).join('')}</div>`);
-    
-    actualizarResumen(carrito);
-    ocultarPreciosExtras();
-}
-
-// Ocultar precios extras
-function ocultarPreciosExtras() {
-    const resumen = document.querySelector('.w-\\[380px\\]');
-    if (!resumen) return;
-    
-    const precioArriba = resumen.querySelector('h2')?.previousElementSibling;
-    if (precioArriba && precioArriba.textContent.includes('$')) {
-        precioArriba.style.display = 'none';
+    if (!contenedor) {
+        console.error("❌ ERROR: No se encontró .lista-carrito en el HTML");
+        return;
     }
-    
-    const infoEnvio = Array.from(resumen.querySelectorAll('h3')).find(h => h.textContent.includes('Información'));
-    if (infoEnvio) {
-        const precioInfo = infoEnvio.previousElementSibling;
-        if (precioInfo && precioInfo.textContent.includes('$')) {
-            precioInfo.style.display = 'none';
-        }
-    }
-}
 
-// Cambiar cantidad
-function cambiarCantidad(i, cambio) {
-    const carrito = getCarrito();
-    carrito[i].cantidad += cambio;
-    if (carrito[i].cantidad <= 0) carrito.splice(i, 1);
-    setCarrito(carrito);
-    location.reload();
-}
+    contenedor.innerHTML = "";
+    let subtotal = 0;
 
-// Eliminar
-function eliminarProducto(i) {
-    const carrito = getCarrito();
-    carrito.splice(i, 1);
-    setCarrito(carrito);
-    toast('Producto eliminado', 'success');
-    location.reload();
-}
+    carrito.forEach(item => {
+        const subtotalItem = item.precio * item.cantidad;
+        subtotal += subtotalItem;
 
-// Actualizar resumen
-function actualizarResumen(carrito) {
-    const subtotal = carrito.reduce((s, item) => s + (item.precio * item.cantidad), 0);
-    const envio = subtotal > 100000 ? 0 : 5000;
-    const total = subtotal + envio;
-    
-    const resumen = document.querySelector('.w-\\[380px\\]');
-    if (!resumen) return;
-    
-    resumen.querySelectorAll('span').forEach(span => {
-        const prev = span.previousElementSibling?.textContent || '';
-        
-        if (span.textContent === '$0' && prev.includes('Subtotal')) {
-            span.textContent = `$${subtotal.toLocaleString('es-CO')}`;
-        }
-        
-        if (span.classList.contains('text-blue-600') && span.parentElement?.classList.contains('bg-gray-100')) {
-            span.textContent = `$${total.toLocaleString('es-CO')}`;
-        }
-        
-        if (span.textContent === 'Gratis' && prev.includes('Envío')) {
-            span.textContent = envio === 0 ? 'Gratis' : `$${envio.toLocaleString('es-CO')}`;
-        }
+        contenedor.innerHTML += `
+            <div class="item-carrito flex items-center justify-between p-4 bg-white shadow-md rounded-xl mb-3">
+
+                <img src="${item.imagen}" width="80" class="rounded-lg">
+
+                <div class="flex-1 ml-4">
+                    <h3 class="font-semibold">${item.nombre}</h3>
+                    <p class="text-gray-600">Precio: $${item.precio.toLocaleString('es-CO')}</p>
+
+                    <div class="flex items-center gap-3 mt-2">
+                        <button class="px-2 py-1 bg-gray-200 rounded"
+                            onclick="restarCantidad('${item.id}')">➖</button>
+
+                        <span class="font-bold">${item.cantidad}</span>
+
+                        <button class="px-2 py-1 bg-gray-200 rounded"
+                            onclick="sumarCantidad('${item.id}')">➕</button>
+                    </div>
+
+                    <p class="mt-2 font-semibold text-blue-600">
+                        Subtotal: $${subtotalItem.toLocaleString('es-CO')}
+                    </p>
+                </div>
+
+                <button class="text-red-600 font-bold" onclick="eliminarDelCarrito('${item.id}')">
+                    🗑
+                </button>
+            </div>
+        `;
     });
+
+    subtotalText.textContent = `$${subtotal.toLocaleString("es-CO")}`;
+    totalText.textContent = `$${subtotal.toLocaleString("es-CO")}`;
+
+    return { carrito, subtotal };
 }
 
-// Finalizar compra
-async function finalizarCompra() {
-    const carrito = getCarrito();
-    if (!carrito.length) return toast('Tu carrito está vacío', 'error');
-    
-    // Buscar inputs dentro del resumen (no en los productos)
-    const resumen = document.querySelector('.w-\\[380px\\]');
-    const inputs = resumen.querySelectorAll('input');
-    
-    const direccion = inputs[0]?.value.trim() || '';
-    const ciudad = inputs[1]?.value.trim() || '';
-    const codigoPostal = inputs[2]?.value.trim() || '';
-    const metodoPago = resumen.querySelector('select')?.value || 'Efectivo contra entrega';
-    
-    console.log('Datos capturados:', { direccion, ciudad, codigoPostal, metodoPago });
-    
-    if (!direccion || !ciudad || !codigoPostal) {
-        return toast('Completa todos los campos', 'error');
+
+
+// =====================================================
+// ➕ SUMAR CANTIDAD
+// =====================================================
+function sumarCantidad(id) {
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    const prod = carrito.find(item => item.id === id);
+
+    if (prod) {
+        prod.cantidad += 1;
     }
-    
-    const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('Finalizar'));
-    if (btn) {
-        btn.disabled = true;
-        btn.textContent = 'Procesando...';
-    }
-    
-    try {
-        const subtotal = carrito.reduce((s, i) => s + (i.precio * i.cantidad), 0);
-        const res = await fetch(`${API_URL}/pedido`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                pedidoId: `PED-${Date.now()}`,
-                email: JSON.parse(localStorage.getItem('usuario') || '{}').email || 'invitado@techstore.com',
-                direccion: `${direccion}, ${ciudad}, ${codigoPostal}`,
-                nombre_productos: carrito.map(i => i.nombre),
-                cantida_producto: carrito.reduce((s, i) => s + i.cantidad, 0),
-                metodo_pago: metodoPago,
-                fecha_pedido: new Date(),
-                estado: 'pendiente',
-                total: subtotal + (subtotal > 100000 ? 0 : 5000)
-            })
-        });
-        
-        if (res.ok) {
-            toast('¡Pedido realizado con éxito!', 'success');
-            localStorage.removeItem('carrito');
-            setTimeout(() => window.location.href = './productos.html', 2000);
-        } else throw new Error();
-    } catch {
-        toast('Error al procesar el pedido', 'error');
-        if (btn) {
-            btn.disabled = false;
-            btn.textContent = '✓ Finalizar Compra';
+
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+    mostrarCarrito();
+}
+
+
+
+// =====================================================
+// ➖ RESTAR CANTIDAD
+// =====================================================
+function restarCantidad(id) {
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    const prod = carrito.find(item => item.id === id);
+
+    if (prod) {
+        prod.cantidad -= 1;
+
+        if (prod.cantidad <= 0) {
+            carrito = carrito.filter(item => item.id !== id);
         }
     }
+
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+    mostrarCarrito();
 }
 
-// Init
-document.addEventListener('DOMContentLoaded', () => {
-    cargarCarrito();
-    setTimeout(() => {
-        const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('Finalizar'));
-        if (btn) btn.addEventListener('click', finalizarCompra);
-    }, 500);
+
+
+// =====================================================
+// 🗑 ELIMINAR PRODUCTO
+// =====================================================
+function eliminarDelCarrito(id) {
+    let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+    carrito = carrito.filter(item => item.id !== id);
+
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+    mostrarCarrito();
+}
+
+// =====================================================
+// 🟢 MOSTRAR MENSAJE BONITO
+// =====================================================
+function mostrarMensaje(texto, tipo = "success") {
+    const contenedor = document.getElementById("mensaje-pedido");
+
+    const colores = tipo === "success"
+        ? "bg-green-100 text-green-800 border-green-300"
+        : "bg-red-100 text-red-800 border-red-300";
+
+    contenedor.innerHTML = `
+        <div class="p-3 rounded-xl border ${colores} text-center mt-3">
+            ${texto}
+        </div>
+    `;
+
+    setTimeout(() => contenedor.innerHTML = "", 4000);
+}
+
+// =====================================================
+// 🧾 FINALIZAR COMPRA
+// =====================================================
+async function finalizarCompra() {
+
+    const direccion = document.getElementById("direccion").value.trim();
+    const ciudad = document.getElementById("ciudad").value.trim();
+    const metodoPago = document.getElementById("metodo-pago").value;
+    const btn = document.getElementById("btn-finalizar");
+
+    // Obtener usuario logueado
+    const Usuario = JSON.parse(localStorage.getItem("Usuario"));
+    const email = Usuario?.email;
+
+    if (!email) {
+        mostrarMensaje("Debes iniciar sesión para continuar 🧑‍💻", "error");
+        return;
+    }
+
+    // Obtener carrito
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    if (carrito.length === 0) {
+        mostrarMensaje("Tu carrito está vacío 🛒", "error");
+        return;
+    }
+
+    if (!direccion) {
+        mostrarMensaje("Debes ingresar la dirección 🏠", "error");
+        return;
+    }
+
+    if (!ciudad) {
+        mostrarMensaje("Debes ingresar la ciudad 🏙️", "error");
+        return;
+    }
+
+    const total = carrito.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
+
+    const pedido = {
+        email,
+        direccion: `${direccion}, ${ciudad}`,
+        metodo_pago: metodoPago,
+        total,
+        productos: carrito
+    };
+
+    try {
+        btn.disabled = true;
+        btn.innerText = "Procesando...";
+
+        const response = await fetch("https://ecomerce-1-1jpe.onrender.com/api/pedidos", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(pedido)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            mostrarMensaje("Pedido realizado con éxito 🎉🛒", "success");
+            localStorage.removeItem("carrito");
+
+            // volver a mostrar carrito limpio
+            mostrarCarrito();
+        } else {
+            mostrarMensaje("Error al generar el pedido ❌", "error");
+            console.log(data);
+        }
+
+    } catch (error) {
+        console.error("Error:", error);
+        mostrarMensaje("Error de conexión con el servidor ❌", "error");
+    }
+
+    btn.disabled = false;
+    btn.innerText = "Finalizar compra";
+}
+
+
+
+
+
+
+// =====================================================
+// 🔄 CARGAR AUTOMÁTICAMENTE AL ABRIR carrito.html
+// =====================================================
+document.addEventListener("DOMContentLoaded", () => {
+    mostrarCarrito();
+
+    const btn = document.getElementById("btn-finalizar");
+    if (btn) btn.addEventListener("click", finalizarCompra);
 });
